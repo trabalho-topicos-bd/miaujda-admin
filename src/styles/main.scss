@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+@import './variables.scss';
+
+@import './pages/login.scss';
+
+@import './components/input.scss';
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+input,
+button {
+    height: 48px;
+    outline: none;
+    border: 2px solid #777;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+    box-shadow: 0px 0px 1px $primary;
+    padding: 0 1rem;
+    font-size: 1.15rem;
+
+    &:hover,
+    &:focus {
+        box-shadow: 0px 0px 1px 2px $primary;
+    }
+}
+
+button {
+    background-image: linear-gradient(to right, $primary 50%, transparent 50%);
+    background-size: 200%;
+    background-position-x: 100%;
+
+    transition: background-position-x 0.4s 0.4s ease,
+        border-color 0.2s 0.4s linear, color 0.4s 0.8s ease;
+
+    &:hover {
+        background-position-x: 0%;
+        border-color: $primary;
+        color: #fff;
+    }
+}
