@@ -7,7 +7,7 @@ import { SessionContextData } from './types/session';
 const TOKEN_KEY = 'miaujuda-token';
 
 export const App = (): JSX.Element => {
-    const [token, setToken] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>('temp');
 
     const sessionContextValue = useMemo<SessionContextData>(
         () => ({
@@ -23,6 +23,8 @@ export const App = (): JSX.Element => {
                 localStorage.removeItem(TOKEN_KEY);
 
                 delete api.defaults.headers.Authorization;
+
+                setToken(null);
             },
         }),
         [token],
@@ -30,6 +32,8 @@ export const App = (): JSX.Element => {
 
     useEffect(() => {
         const oldToken = localStorage.getItem(TOKEN_KEY);
+
+        console.log(oldToken);
 
         setToken(oldToken);
     }, []);

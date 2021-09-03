@@ -1,0 +1,12 @@
+#pets-page {
+    .form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+
+        .field-component:last-of-type,
+        button {
+            grid-column: span 2;
+        }
+    }
+}

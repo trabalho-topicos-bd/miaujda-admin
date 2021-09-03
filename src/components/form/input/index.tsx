@@ -11,7 +11,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         const { title, error, ...rest } = props;
 
         return (
-            <div id="input-component">
+            <div className="field-component">
                 <label htmlFor={rest.id}>{title}</label>
                 <input {...rest} ref={ref} />
                 {error && <span id="error">{error.message}</span>}

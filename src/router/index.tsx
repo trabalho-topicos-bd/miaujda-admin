@@ -6,8 +6,9 @@ import {
     Redirect,
 } from 'react-router-dom';
 import { SessionContext } from '../context/session';
-import { DashboardPage } from '../screens/app/dashboard';
-import { LoginPage } from '../screens/auth/login';
+import { DashboardPage } from '../pages/app/dashboard';
+import { PetsPage } from '../pages/app/pets';
+import { LoginPage } from '../pages/auth/login';
 
 export const AppRouter = (): JSX.Element => {
     const { token } = useContext(SessionContext);
@@ -22,6 +23,7 @@ export const AppRouter = (): JSX.Element => {
             ) : (
                 <Switch>
                     <Route path="/dashboard" component={DashboardPage} />
+                    <Route path="/pets" component={PetsPage} />
                     <Redirect to="/dashboard" />
                 </Switch>
             )}

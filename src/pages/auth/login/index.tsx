@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useContext } from 'react';
 import { Layout } from '../../../components/layout';
 import { LoginData } from '../../../types/session';
-import { Input } from '../../../components/input';
+import { Input } from '../../../components/form/input';
 import { SessionContext } from '../../../context/session';
 import { sessionServices } from '../../../services/session';
 
@@ -49,7 +49,7 @@ export const LoginPage = (): JSX.Element => {
     return (
         <Layout title="Login">
             <main id="login-page">
-                <form className="form" onSubmit={handleSubmit(handleForm)}>
+                <form className="box form" onSubmit={handleSubmit(handleForm)}>
                     <img src="miaujuda.png" alt="Logo Miaujuda" />
                     <Controller
                         render={({ field }) => (
@@ -58,6 +58,7 @@ export const LoginPage = (): JSX.Element => {
                                 title="E-mail"
                                 placeholder="E-mail"
                                 error={errors.email}
+                                autoComplete="email"
                                 {...field}
                             />
                         )}
