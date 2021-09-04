@@ -4,18 +4,30 @@
     justify-content: center;
     grid-row-gap: 0.5rem;
 
-    .checkbox {
-        width: 2.75rem;
-        position: relative;
-        height: 1rem;
-        background-color: #cdcdcd;
-        border-radius: $base-radius;
+    .checkbox,
+    .file {
+        width: 100%;
+        height: 48px;
+        display: flex;
+        align-items: center;
+    }
 
+    .checkbox {
         input {
             display: none;
         }
 
         span {
+            display: block;
+            width: 2.75rem;
+            height: 1rem;
+            background-color: #cdcdcd;
+            border-radius: $base-radius;
+            position: relative;
+            transition: background-color 0.4s ease;
+        }
+
+        span::before {
             content: '';
             top: -0.25rem;
             left: 0;
@@ -28,7 +40,21 @@
         }
 
         input[type='checkbox']:checked + span {
-            left: calc(100% - 1.5rem);
+            background-color: rgba($color: $primary, $alpha: 0.5);
+
+            &::before {
+                left: calc(100% - 1.5rem);
+            }
+        }
+    }
+
+    .file {
+        input[type='file'] {
+            display: none;
+        }
+
+        label > button {
+            pointer-events: none;
         }
     }
 

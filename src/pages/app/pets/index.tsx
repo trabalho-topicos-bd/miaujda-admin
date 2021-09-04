@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { BiPlusCircle, BiXCircle } from 'react-icons/bi';
 import { Layout } from '../../../components/layout';
 import { petServices } from '../../../services/pet';
 import { PetData } from '../../../types/pet';
@@ -32,15 +33,20 @@ export const PetsPage = (): JSX.Element => {
                     <button
                         className="filled"
                         type="button"
-                        onClick={() => setEditing(true)}>
-                        <span>+ Cadastrar</span>
+                        onClick={() => setEditing((prev) => !prev)}>
+                        {editing ? (
+                            <BiXCircle size="16px" />
+                        ) : (
+                            <BiPlusCircle size="16px" />
+                        )}
+                        <span>{editing ? 'Cancelar' : 'Cadastrar novo'}</span>
                     </button>
                 </div>
-                {editing && <PetsForm />}
+                {editing && <PetsForm setPets={setPets} />}
                 <ul>
                     {pets.map((pet) => (
                         <li>
-                            <h1 key={`pet-${pet.id}`}>{pet.name}</h1>
+                            <h4 key={`pet-${pet.id}`}>{pet.name}</h4>
                         </li>
                     ))}
                 </ul>

@@ -21,3 +21,18 @@ export const genders: OptionData[] = [
         label: 'Fêmea',
     },
 ];
+
+export const sizes: OptionData[] = [
+    {
+        value: 0,
+        label: 'Pequeno',
+    },
+    {
+        value: 1,
+        label: 'Médio',
+    },
+    {
+        value: 2,
+        label: 'Grande',
+    },
+];

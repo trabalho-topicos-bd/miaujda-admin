@@ -1,12 +1,15 @@
 import * as yup from 'yup';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import { BiSave } from 'react-icons/bi';
 import { Input } from '../../../../components/form/input';
 import { Select } from '../../../../components/form/select';
-import { PetFormData } from '../../../../types/pet';
-import { species, genders } from './data';
+import { PetData, PetFormData } from '../../../../types/pet';
+import { species, genders, sizes } from './data';
 import { Checkbox } from '../../../../components/form/checkbox';
+import { File } from '../../../../components/form/file';
+import { petServices } from '../../../../services/pet';
 
 const formSchema: yup.SchemaOf<PetFormData> = yup.object().shape({
     name: yup.string().required('Preencha o campo'),
@@ -17,23 +20,26 @@ const formSchema: yup.SchemaOf<PetFormData> = yup.object().shape({
         .number()
         .required('Preencha o campo')
         .min(1, 'Valor deve ser maior ou igual a 1'),
+    size: yup.number(),
+    castrated: yup.boolean(),
     adopted: yup.boolean(),
     images: yup.array().of(yup.string()),
 });
 
-export const PetsForm = (): JSX.Element => {
-    const handleForm = useCallback<SubmitHandler<PetFormData>>((values) => {
-        try {
-            console.log(values);
-        } catch (err) {
-            console.log(err);
-        }
-    }, []);
+interface PetsFormProps {
+    setPets: React.Dispatch<React.SetStateAction<PetData[]>>;
+}
+
+export const PetsForm = ({ setPets }: PetsFormProps): JSX.Element => {
+    const [images, setImages] = useState<File[]>([]);
+
+    const { _createOne, _getAll, _uploadImage } = petServices();
 
     const {
         control,
         handleSubmit,
-        formState: { errors },
+        reset,
+        formState: { errors, isSubmitting },
     } = useForm<PetFormData>({
         resolver: yupResolver(formSchema),
         defaultValues: {
@@ -42,10 +48,42 @@ export const PetsForm = (): JSX.Element => {
             breed: '',
             gender: 0,
             age: 0,
+            size: 0,
+            castrated: false,
             adopted: false,
             images: [],
         },
     });
+
+    const handleForm = useCallback<SubmitHandler<PetFormData>>(
+        async (values) => {
+            try {
+                const imageIds = await _uploadImage(images);
+
+                const obj = { ...values };
+                obj.images = imageIds;
+
+                await _createOne(obj);
+
+                const data = await _getAll();
+
+                setPets(data);
+
+                setImages([]);
+
+                reset();
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        [_createOne, _getAll, _uploadImage, images, reset, setPets],
+    );
+
+    const handleChangeImages = useCallback<
+        React.ChangeEventHandler<HTMLInputElement>
+    >((e) => {
+        setImages(Array.from(e.target.files));
+    }, []);
 
     return (
         <form className="form" onSubmit={handleSubmit(handleForm)}>
@@ -119,6 +157,32 @@ export const PetsForm = (): JSX.Element => {
             />
             <Controller
                 render={({ field }) => (
+                    <Select
+                        title="Porte"
+                        placeholder="Porte"
+                        options={sizes}
+                        error={errors.size}
+                        {...field}
+                    />
+                )}
+                control={control}
+                name="size"
+            />
+            <Controller
+                render={({ field }) => (
+                    <Checkbox
+                        title="Castrado"
+                        placeholder="Castrado"
+                        error={errors.castrated}
+                        {...field}
+                        value={String(field.value)}
+                    />
+                )}
+                control={control}
+                name="castrated"
+            />
+            <Controller
+                render={({ field }) => (
                     <Checkbox
                         title="Adotado"
                         placeholder="Adotado"
@@ -131,20 +195,34 @@ export const PetsForm = (): JSX.Element => {
                 name="adopted"
             />
             <Controller
-                render={({ field, fieldState }) => (
-                    <Input
+                render={({ fieldState }) => (
+                    <File
                         title="Imagens"
                         placeholder="Imagens"
                         type="file"
                         accept="image/*"
+                        multiple
                         error={fieldState.error}
-                        {...field}
+                        onChange={handleChangeImages}
                     />
                 )}
                 control={control}
                 name="images"
             />
-            <button type="submit">Confirmar</button>
+            <div className="image-preview-wrapper">
+                {images.map((image, index) => (
+                    <img
+                        key={`image-${index + 1}`}
+                        className="image-preview"
+                        src={URL.createObjectURL(image)}
+                        alt={`Imagem ${index + 1}`}
+                    />
+                ))}
+            </div>
+            <button type="submit" disabled={isSubmitting}>
+                <BiSave size="16px" />
+                <span>Confirmar</span>
+            </button>
         </form>
     );
 };

@@ -4,8 +4,10 @@ export interface PetFormData {
     breed: string;
     gender: number;
     age: number;
+    size: number;
+    castrated: boolean;
     adopted: boolean;
-    images: string[];
+    images: string[] | File[];
 }
 
 export type PetFormUpdateData = {
