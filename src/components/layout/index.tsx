@@ -12,7 +12,7 @@ interface LayoutProps {
 export const Layout = (props: LayoutProps): JSX.Element => {
     const { title, isLogged = false, children } = props;
 
-    const layoutClasses = useMemo(() => isLogged && 'logged', [isLogged]);
+    const layoutClasses = useMemo(() => (isLogged ? 'logged' : ''), [isLogged]);
 
     return (
         <>

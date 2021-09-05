@@ -2,11 +2,15 @@ import * as yup from 'yup';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useContext } from 'react';
+import Lottie from 'react-lottie';
+import { BiLogIn } from 'react-icons/bi';
 import { Layout } from '../../../components/layout';
 import { LoginData } from '../../../types/session';
 import { Input } from '../../../components/form/input';
 import { SessionContext } from '../../../context/session';
 import { sessionServices } from '../../../services/session';
+import submittingLottie from '../../../assets/lottie/submitting.json';
+import { getLottieOptions, showToast } from '../../../utils/helpers';
 
 const formSchema: yup.SchemaOf<LoginData> = yup.object().shape({
     email: yup
@@ -24,7 +28,7 @@ export const LoginPage = (): JSX.Element => {
     const {
         control,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<LoginData>({
         resolver: yupResolver(formSchema),
         defaultValues: {
@@ -40,7 +44,7 @@ export const LoginPage = (): JSX.Element => {
 
                 handleLogin(token);
             } catch (err) {
-                console.log(err);
+                showToast(err, 'error');
             }
         },
         [_login, handleLogin],
@@ -79,7 +83,20 @@ export const LoginPage = (): JSX.Element => {
                         control={control}
                         name="password"
                     />
-                    <button type="submit">Confirmar</button>
+                    <button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <Lottie
+                                options={getLottieOptions(submittingLottie)}
+                                height={32}
+                                width={196}
+                            />
+                        ) : (
+                            <>
+                                <BiLogIn size="1rem" />
+                                <span>Confirmar</span>
+                            </>
+                        )}
+                    </button>
                 </form>
             </main>
         </Layout>

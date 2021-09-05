@@ -1,4 +1,6 @@
 import { LoginData, SessionData } from '../types/session';
+import { serviceErrorHandler } from '../utils/helpers';
+import { api } from './api';
 
 interface sessionServicesData {
     _login(values: LoginData): Promise<SessionData>;
@@ -6,11 +8,11 @@ interface sessionServicesData {
 
 const _login = async (values: LoginData) => {
     try {
-        return {
-            token: `token-${values.email}-${values.password}`,
-        };
+        const { data } = await api.post('/user/login', values);
+
+        return data;
     } catch (err) {
-        throw JSON.stringify(err);
+        throw serviceErrorHandler(err);
     }
 };
 

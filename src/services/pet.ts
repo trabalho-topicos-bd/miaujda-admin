@@ -1,4 +1,5 @@
 import { PetData, PetFormData, PetFormUpdateData } from '../types/pet';
+import { serviceErrorHandler } from '../utils/helpers';
 import { api } from './api';
 
 interface petServicesData {
@@ -14,7 +15,7 @@ const _createOne = async (values: PetFormData): Promise<void> => {
     try {
         await api.post('/pet', values);
     } catch (err) {
-        throw JSON.stringify(err);
+        throw serviceErrorHandler(err);
     }
 };
 
@@ -24,7 +25,7 @@ const _getAll = async (): Promise<PetData[]> => {
 
         return data;
     } catch (err) {
-        throw JSON.stringify(err);
+        throw serviceErrorHandler(err);
     }
 };
 
@@ -34,7 +35,7 @@ const _getOne = async (id: number): Promise<PetData> => {
 
         return data;
     } catch (err) {
-        throw JSON.stringify(err);
+        throw serviceErrorHandler(err);
     }
 };
 
@@ -43,17 +44,17 @@ const _updateOne = async (
     values: PetFormUpdateData,
 ): Promise<void> => {
     try {
-        console.log(id, values);
+        await api.patch(`/pet/${id}`, values);
     } catch (err) {
-        throw JSON.stringify(err);
+        throw serviceErrorHandler(err);
     }
 };
 
 const _deleteOne = async (id: number): Promise<void> => {
     try {
-        console.log(id);
+        await api.delete(`/pet/${id}`);
     } catch (err) {
-        throw JSON.stringify(err);
+        throw serviceErrorHandler(err);
     }
 };
 
@@ -73,7 +74,7 @@ const _uploadImage = async (files: File[]): Promise<string[]> => {
 
         return data;
     } catch (err) {
-        throw JSON.stringify(err);
+        throw serviceErrorHandler(err);
     }
 };
 

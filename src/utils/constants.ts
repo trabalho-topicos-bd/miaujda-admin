@@ -1,4 +1,6 @@
-import { OptionData } from '../../../../components/form/select';
+import { OptionData } from '../components/form/select';
+
+export const TOKEN_KEY = 'miaujuda-token';
 
 export const species: OptionData[] = [
     {

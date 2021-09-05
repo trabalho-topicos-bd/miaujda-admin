@@ -1,15 +1,22 @@
 import * as yup from 'yup';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { BiSave } from 'react-icons/bi';
+import Lottie from 'react-lottie';
 import { Input } from '../../../../components/form/input';
 import { Select } from '../../../../components/form/select';
 import { PetData, PetFormData } from '../../../../types/pet';
-import { species, genders, sizes } from './data';
+import { species, genders, sizes } from '../../../../utils/constants';
 import { Checkbox } from '../../../../components/form/checkbox';
 import { File } from '../../../../components/form/file';
 import { petServices } from '../../../../services/pet';
+import {
+    getApiUrl,
+    getLottieOptions,
+    showToast,
+} from '../../../../utils/helpers';
+import submittingLottie from '../../../../assets/lottie/submitting.json';
 
 const formSchema: yup.SchemaOf<PetFormData> = yup.object().shape({
     name: yup.string().required('Preencha o campo'),
@@ -27,33 +34,48 @@ const formSchema: yup.SchemaOf<PetFormData> = yup.object().shape({
 });
 
 interface PetsFormProps {
-    setPets: React.Dispatch<React.SetStateAction<PetData[]>>;
+    editing: PetData | boolean;
+    handleFinishAction(): Promise<void>;
 }
 
-export const PetsForm = ({ setPets }: PetsFormProps): JSX.Element => {
+export const PetsForm = ({
+    editing,
+    handleFinishAction,
+}: PetsFormProps): JSX.Element => {
     const [images, setImages] = useState<File[]>([]);
 
-    const { _createOne, _getAll, _uploadImage } = petServices();
+    const { _createOne, _updateOne, _uploadImage } = petServices();
+
+    const defaultValues = useMemo(
+        () =>
+            typeof editing === 'object'
+                ? editing
+                : {
+                      name: '',
+                      species: 0,
+                      breed: '',
+                      gender: 0,
+                      age: 0,
+                      size: 0,
+                      castrated: false,
+                      adopted: false,
+                      images: [],
+                  },
+        [editing],
+    );
 
     const {
         control,
         handleSubmit,
+        watch,
         reset,
         formState: { errors, isSubmitting },
     } = useForm<PetFormData>({
         resolver: yupResolver(formSchema),
-        defaultValues: {
-            name: '',
-            species: 0,
-            breed: '',
-            gender: 0,
-            age: 0,
-            size: 0,
-            castrated: false,
-            adopted: false,
-            images: [],
-        },
+        defaultValues,
     });
+
+    const imagesWatch = watch('images');
 
     const handleForm = useCallback<SubmitHandler<PetFormData>>(
         async (values) => {
@@ -61,22 +83,38 @@ export const PetsForm = ({ setPets }: PetsFormProps): JSX.Element => {
                 const imageIds = await _uploadImage(images);
 
                 const obj = { ...values };
-                obj.images = imageIds;
+                obj.images = [...obj.images, ...imageIds] as string[];
 
-                await _createOne(obj);
+                const isEditing = typeof editing === 'object';
 
-                const data = await _getAll();
+                if (isEditing) {
+                    await _updateOne(editing.id, obj);
+                } else await _createOne(obj);
 
-                setPets(data);
+                showToast(
+                    `Registro ${
+                        isEditing ? 'atualizado' : 'criado'
+                    } com sucesso`,
+                );
+
+                await handleFinishAction();
 
                 setImages([]);
 
                 reset();
             } catch (err) {
-                console.log(err);
+                showToast(err, 'error');
             }
         },
-        [_createOne, _getAll, _uploadImage, images, reset, setPets],
+        [
+            _createOne,
+            _updateOne,
+            _uploadImage,
+            editing,
+            handleFinishAction,
+            images,
+            reset,
+        ],
     );
 
     const handleChangeImages = useCallback<
@@ -174,8 +212,8 @@ export const PetsForm = ({ setPets }: PetsFormProps): JSX.Element => {
                         title="Castrado"
                         placeholder="Castrado"
                         error={errors.castrated}
-                        {...field}
-                        value={String(field.value)}
+                        checked={field.value}
+                        onChange={field.onChange}
                     />
                 )}
                 control={control}
@@ -187,8 +225,8 @@ export const PetsForm = ({ setPets }: PetsFormProps): JSX.Element => {
                         title="Adotado"
                         placeholder="Adotado"
                         error={errors.adopted}
-                        {...field}
-                        value={String(field.value)}
+                        checked={field.value}
+                        onChange={field.onChange}
                     />
                 )}
                 control={control}
@@ -210,6 +248,14 @@ export const PetsForm = ({ setPets }: PetsFormProps): JSX.Element => {
                 name="images"
             />
             <div className="image-preview-wrapper">
+                {imagesWatch.map((image, index) => (
+                    <img
+                        key={`preloaded-image-${index + 1}`}
+                        className="image-preview"
+                        src={`${getApiUrl()}/public/img/${image}`}
+                        alt={`Imagem ${index + 1}`}
+                    />
+                ))}
                 {images.map((image, index) => (
                     <img
                         key={`image-${index + 1}`}
@@ -220,8 +266,18 @@ export const PetsForm = ({ setPets }: PetsFormProps): JSX.Element => {
                 ))}
             </div>
             <button type="submit" disabled={isSubmitting}>
-                <BiSave size="16px" />
-                <span>Confirmar</span>
+                {isSubmitting ? (
+                    <Lottie
+                        options={getLottieOptions(submittingLottie)}
+                        height={32}
+                        width={196}
+                    />
+                ) : (
+                    <>
+                        <BiSave size="16px" />
+                        <span>Confirmar</span>
+                    </>
+                )}
             </button>
         </form>
     );

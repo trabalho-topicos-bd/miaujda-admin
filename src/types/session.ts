@@ -8,7 +8,6 @@ export interface SessionData {
 }
 
 export interface SessionContextData {
-    token: string;
     handleLogin(token: string): void;
     handleLogout(): void;
 }

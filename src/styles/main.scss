@@ -13,26 +13,46 @@
     margin: 0;
     padding: 0;
     font-family: 'Ubuntu', sans-serif;
+
+    ::-webkit-scrollbar {
+        appearance: none;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: $base-radius;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: $primary;
+        border-radius: $base-radius;
+
+        &:hover {
+            background: darken($color: $primary, $amount: 5);
+        }
+    }
 }
 
 input,
 select {
     height: 48px;
     outline: none;
-    border: 2px solid $grey;
+    border: none;
     border-radius: 8px;
-    transition: box-shadow 0.3s ease;
-    box-shadow: 0px 0px 1px $primary;
+    transition: background-color 0.3s ease;
     padding: 0 1rem;
     font-size: 1.15rem;
+    box-shadow: 2px 2px 5px #77777780;
 
     &:hover,
     &:focus {
-        box-shadow: 0px 0px 1px 2px $primary;
+        background-color: rgba($color: $primary, $alpha: 0.05);
     }
 }
 
-button {
+button:not(.unstyled):not(.Toastify__close-button) {
     height: 48px;
     outline: none;
     cursor: pointer;
@@ -54,6 +74,22 @@ button {
     &:focus {
         box-shadow: none;
         background-color: darken($color: $primary, $amount: 2.5%);
+    }
+
+    &:disabled {
+        background-color: #cdcdcd;
+        cursor: not-allowed;
+    }
+
+    &.remove {
+        background-color: $error;
+        width: 10rem;
+
+        &:hover,
+        &:focus {
+            box-shadow: none;
+            background-color: darken($color: $error, $amount: 2.5%);
+        }
     }
 }
 
