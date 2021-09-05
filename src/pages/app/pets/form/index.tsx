@@ -47,20 +47,20 @@ export const PetsForm = ({
     const { _createOne, _updateOne, _uploadImage } = petServices();
 
     const defaultValues = useMemo(
-        () =>
-            typeof editing === 'object'
-                ? editing
-                : {
-                      name: '',
-                      species: 0,
-                      breed: '',
-                      gender: 0,
-                      age: 0,
-                      size: 0,
-                      castrated: false,
-                      adopted: false,
-                      images: [],
-                  },
+        () => {
+            if (typeof editing === 'object') return editing
+            return {
+                name: '',
+                species: 0,
+                breed: '',
+                gender: 0,
+                age: 0,
+                size: 0,
+                castrated: false,
+                adopted: false,
+                images: [],
+            }
+        },
         [editing],
     );
 
@@ -88,7 +88,7 @@ export const PetsForm = ({
                 const isEditing = typeof editing === 'object';
 
                 if (isEditing) {
-                    await _updateOne(editing.id, obj);
+                    await _updateOne(typeof editing === 'object' && editing.id, obj);
                 } else await _createOne(obj);
 
                 showToast(
