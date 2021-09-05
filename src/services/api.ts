@@ -9,7 +9,7 @@ const api = axios.create({
 api.interceptors.response.use(
     (res) => res,
     (err) => {
-        if (err.response.status === 401) {
+        if (err.response.status === 401 && localStorage.getItem(TOKEN_KEY)) {
             showToast('Credenciais inválidas! Deslogando...', 'error');
 
             localStorage.removeItem(TOKEN_KEY);
