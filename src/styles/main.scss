@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+@import './variables.scss';
+
+@import './pages/login.scss';
+@import './pages/pets.scss';
+
+@import './components/layout.scss';
+@import './components/form.scss';
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Ubuntu', sans-serif;
+
+    ::-webkit-scrollbar {
+        appearance: none;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: $base-radius;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: $primary;
+        border-radius: $base-radius;
+
+        &:hover {
+            background: darken($color: $primary, $amount: 5);
+        }
+    }
+}
+
+input,
+select {
+    height: 48px;
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    padding: 0 1rem;
+    font-size: 1.15rem;
+    box-shadow: 2px 2px 5px #77777780;
+
+    &:hover,
+    &:focus {
+        background-color: rgba($color: $primary, $alpha: 0.05);
+    }
+}
+
+button:not(.unstyled):not(.Toastify__close-button) {
+    height: 48px;
+    outline: none;
+    cursor: pointer;
+    background-color: $primary;
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0 1rem;
+    font-size: 1.15rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    grid-column-gap: 0.25rem;
+
+    transition: background-color 0.4s ease;
+
+    &:hover,
+    &:focus {
+        box-shadow: none;
+        background-color: darken($color: $primary, $amount: 2.5%);
+    }
+
+    &:disabled {
+        background-color: #cdcdcd;
+        cursor: not-allowed;
+    }
+
+    &.remove {
+        background-color: $error;
+        width: 10rem;
+
+        &:hover,
+        &:focus {
+            box-shadow: none;
+            background-color: darken($color: $error, $amount: 2.5%);
+        }
+    }
+}
+
+.box {
+    background-color: $background;
+    padding: $base-padding;
+    border-radius: $base-radius;
+    // border: 2px solid $grey;
+    box-shadow: 2px 2px 5px $grey-opaque;
+}

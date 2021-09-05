@@ -36,6 +36,7 @@
             "warn",
             4
         ],
+        "no-alert": "off",
         "no-nested-ternary": "off",
         "no-plusplus": "off",
         "no-shadow": "warn",
