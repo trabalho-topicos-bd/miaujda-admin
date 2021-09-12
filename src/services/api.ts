@@ -4,9 +4,6 @@ import { getApiUrl, showToast } from '../utils/helpers';
 
 const api = axios.create({
     baseURL: getApiUrl(),
-    headers: {
-        'Referrer-Policy': 'no-referrer',
-    },
 });
 
 api.interceptors.response.use(
