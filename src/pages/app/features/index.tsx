@@ -2,29 +2,29 @@ import { useCallback, useEffect, useState } from 'react';
 import { BiEdit, BiPlusCircle, BiTrash, BiXCircle } from 'react-icons/bi';
 import Lottie from 'react-lottie';
 import { Layout } from '../../../components/layout';
-import { petServices } from '../../../services/pet';
-import { PetData } from '../../../types/pet';
-import { PetsForm } from './form';
-import { PetItem } from './item';
+import { featureServices } from '../../../services/feature';
+import { FeatureData } from '../../../types/feature';
+import { FeaturesForm } from './form';
+import { FeatureItem } from './item';
 import loadingLottie from '../../../assets/lottie/loading.json';
 import noneFoundLottie from '../../../assets/lottie/none-found.json';
 import submittingLottie from '../../../assets/lottie/submitting.json';
 import { getLottieOptions, showToast } from '../../../utils/helpers';
 
-export const PetsPage = (): JSX.Element => {
+export const FeaturesPage = (): JSX.Element => {
     const [loading, setLoading] = useState(true);
     const [removing, setRemoving] = useState(false);
-    const [pets, setPets] = useState<PetData[]>([]);
-    const [selected, setSelected] = useState<PetData | null>(null);
-    const [editing, setEditing] = useState<PetData | boolean>(false);
+    const [features, setFeatures] = useState<FeatureData[]>([]);
+    const [selected, setSelected] = useState<FeatureData | null>(null);
+    const [editing, setEditing] = useState<FeatureData | boolean>(false);
 
-    const { _getAll, _deleteOne } = petServices();
+    const { _getAll, _deleteOne } = featureServices();
 
     const handleGetData = useCallback(async () => {
         try {
             const data = await _getAll();
 
-            setPets(data.rows);
+            setFeatures(data);
         } catch (err) {
             showToast(err, 'error');
         } finally {
@@ -45,7 +45,7 @@ export const PetsPage = (): JSX.Element => {
     const handleClickDelete = useCallback(async () => {
         if (selected) {
             const result = window.confirm(
-                `Deseja mesmo remover "${selected.name}"?`,
+                `Deseja mesmo remover este nodo de característica?`,
             );
 
             if (result) {
@@ -77,10 +77,10 @@ export const PetsPage = (): JSX.Element => {
     }, [handleGetData]);
 
     return (
-        <Layout title="Pets" isLogged>
-            <div id="pets-page">
+        <Layout title="Características" isLogged>
+            <div id="features-page">
                 <div className="row">
-                    <h1>Pets</h1>
+                    <h1>Características</h1>
                     {!selected || editing ? (
                         <button
                             className="filled"
@@ -92,7 +92,7 @@ export const PetsPage = (): JSX.Element => {
                                 <BiPlusCircle size="16px" />
                             )}
                             <span>
-                                {editing ? 'Cancelar' : 'Cadastrar novo'}
+                                {editing ? 'Cancelar' : 'Cadastrar nova'}
                             </span>
                         </button>
                     ) : (
@@ -128,19 +128,19 @@ export const PetsPage = (): JSX.Element => {
                     )}
                 </div>
                 {editing && (
-                    <PetsForm
+                    <FeaturesForm
                         editing={editing}
                         handleFinishAction={handleFinishAction}
                     />
                 )}
-                {pets.length > 0 && !editing ? (
+                {features.length > 0 && !editing ? (
                     <ul>
-                        <PetItem item={null} header />
-                        {pets.map((pet) => (
-                            <PetItem
-                                key={`pet-${pet.id}`}
-                                item={pet}
-                                isSelected={selected === pet}
+                        <FeatureItem item={null} header />
+                        {features.map((feature) => (
+                            <FeatureItem
+                                key={`feature-${feature.id}`}
+                                item={feature}
+                                isSelected={selected === feature}
                                 setSelected={setSelected}
                             />
                         ))}
@@ -162,7 +162,7 @@ export const PetsPage = (): JSX.Element => {
                                 height={300}
                                 width={300}
                             />
-                            <h3>Nenhum pet cadastrado</h3>
+                            <h3>Nenhuma característica cadastrado</h3>
                         </div>
                     )
                 )}

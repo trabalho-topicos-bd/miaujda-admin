@@ -3,6 +3,11 @@
     flex-direction: column;
     justify-content: center;
     grid-row-gap: 0.5rem;
+    position: relative;
+
+    & > div > input {
+        width: 100%;
+    }
 
     .checkbox,
     .file {
@@ -61,5 +66,11 @@
     #error {
         font-size: 0.9rem;
         color: $error;
+    }
+
+    #field-loading {
+        position: absolute;
+        top: 40px;
+        right: 16px;
     }
 }

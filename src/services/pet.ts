@@ -2,9 +2,16 @@ import { PetData, PetFormData, PetFormUpdateData } from '../types/pet';
 import { serviceErrorHandler } from '../utils/helpers';
 import { api } from './api';
 
+interface getAllData {
+    count: number;
+    rows: PetData[];
+}
+
 interface petServicesData {
     _createOne(values: PetFormData): Promise<void>;
-    _getAll(): Promise<PetData[]>;
+    _getAll(
+        params?: { [key in keyof PetFormData]?: PetFormData[key] },
+    ): Promise<getAllData>;
     _getOne(id: number): Promise<PetData>;
     _updateOne(id: number, values: PetFormUpdateData): Promise<void>;
     _deleteOne(id: number): Promise<void>;
@@ -19,9 +26,9 @@ const _createOne = async (values: PetFormData): Promise<void> => {
     }
 };
 
-const _getAll = async (): Promise<PetData[]> => {
+const _getAll = async (params = {}): Promise<getAllData> => {
     try {
-        const { data } = await api.get('/pet');
+        const { data } = await api.get('/pet', { params });
 
         return data;
     } catch (err) {
