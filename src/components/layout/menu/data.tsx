@@ -1,5 +1,5 @@
-import { BiHome } from 'react-icons/bi';
-import { MdPets } from 'react-icons/md';
+import { MdHome, MdPets, MdStar } from 'react-icons/md';
+import { FaUsers } from 'react-icons/fa';
 
 export interface MenuData {
     id: number;
@@ -12,7 +12,7 @@ export const menus: MenuData[] = [
     {
         id: 0,
         to: '/dashboard',
-        icon: <BiHome size="1.5rem" />,
+        icon: <MdHome size="1.5rem" />,
         label: 'Dashboard',
     },
     {
@@ -20,5 +20,17 @@ export const menus: MenuData[] = [
         to: '/pets',
         icon: <MdPets size="1.5rem" />,
         label: 'Pets',
+    },
+    {
+        id: 2,
+        to: '/features',
+        icon: <MdStar size="1.5rem" />,
+        label: 'Características',
+    },
+    {
+        id: 3,
+        to: '/admins',
+        icon: <FaUsers size="1.5rem" />,
+        label: 'Administradores',
     },
 ];
